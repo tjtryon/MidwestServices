@@ -1,0 +1,147 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Usage Notes</h2>
+  <p class="text-muted">Follow these instructions to properly install, configure, and operate the race timing system.</p>
+
+  <ol class="list-group list-group-numbered">
+
+    <li class="list-group-item">
+      <strong>&#9881; Install the program and create the admin user</strong>
+      <ul>
+        <li>Ensure Python 3.8 or newer is installed.</li>
+        <li>Navigate to the project directory:
+          <pre><code>cd console</code></pre>
+        </li>
+        <li>Create and activate a virtual environment (optional but recommended):
+          <pre><code>python3 -m venv venv
+source venv/bin/activate</code></pre>
+        </li>
+        <li>Install packages:
+          <pre><code>pip install -r requirements.txt</code></pre>
+        </li>
+        <li>Run the console app to create an admin user:
+          <pre><code>python3 race_timing_console.py</code></pre>
+        </li>
+        <li><strong>Important:</strong> Write down your admin username and password!</li>
+
+        <p><strong>Example directory structure:</strong></p>
+<pre>
+console/
+├── data/
+│   ├── config.db
+│   └── YYYYMMDD-##-race.db
+├── web/
+│   ├── app.py
+│   ├── templates/
+│   └── static/
+├── race_timing_console.py
+└── requirements.txt
+</pre>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#128640; Start the Flask application in a new terminal</strong>
+      <ul>
+        <li>Open a <strong>new terminal session</strong>.</li>
+        <li>Navigate to the Flask app directory:
+          <pre><code>cd console/web</code></pre>
+        </li>
+        <li>Start the Flask application:
+          <pre><code>python3 app.py</code></pre>
+        </li>
+        <li>Visit <code>http://localhost:5000/admin</code> in your browser, log in, and open the "Usage Notes" page to verify everything is running.</li>
+        <li class="text-danger"><strong>Leave this terminal session running the entire time you are timing races.</strong></li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#128451; Create a new race database and import runners</strong>
+      <ul>
+        <li>In the first terminal, use <code>race_timing_console.py</code> to create a new race database.</li>
+        <li>Import runners from a CSV file containing bib numbers, names, and teams.</li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#127937; Start the race and record finish times</strong>
+      <ul>
+        <li>Use the console app to start timing.</li>
+        <li>Scan RFID tags or press the spacebar to record finish times.</li>
+        <li>If no bib is entered, assign it later on the Admin page.</li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#9995; Stop the race</strong>
+      <ul>
+        <li>Stop the race in the console app once all runners finish.</li>
+        <li>This finalizes the race database.</li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#128295; Edit results from the Admin page</strong>
+      <ul>
+        <li>On the Admin page, select "Edit Results."</li>
+        <li>Choose a race to update bib numbers or finish orders.</li>
+        <li>Save changes.</li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#128064; View individual and team results</strong>
+      <ul>
+        <li>From the home page, select a race date and number.</li>
+        <li>View the <strong>Individual Results</strong> and <strong>Team Results</strong>.</li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#128257; Start a new race (if needed)</strong>
+      <ul>
+        <li>For another race:
+          <ol>
+            <li>Create a new race database in the console app.</li>
+            <li>Import the new runners for that race.</li>
+            <li>Repeat the process starting from <strong>Start the race and record finish times</strong>.</li>
+          </ol>
+        </li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#128424; Print finalized results</strong>
+      <ul>
+        <li>Once all results are verified:
+          <ol>
+            <li>Open each race’s Individual Results and Team Results.</li>
+            <li>Use your browser’s print option (<kbd>Ctrl+P</kbd> / <kbd>Cmd+P</kbd>).</li>
+            <li>Print enough copies for each coach and the meet director.</li>
+          </ol>
+        </li>
+      </ul>
+    </li>
+
+    <li class="list-group-item">
+      <strong>&#9989; Shut down the system</strong>
+      <ul>
+        <li>When done:
+          <ul>
+            <li>Stop the console app with <kbd>Ctrl+C</kbd>.</li>
+            <li>Stop the Flask app with <kbd>Ctrl+C</kbd>.</li>
+          </ul>
+        </li>
+        <li>Close both terminal sessions.</li>
+      </ul>
+    </li>
+
+  </ol>
+
+  <p class="mt-4">
+    For additional help, visit the <a href="{{ url_for('help') }}">Help page</a> or use the <a href="{{ url_for('contact_us') }}">Contact Us form</a>.
+  </p>
+</div>
+{% endblock %}

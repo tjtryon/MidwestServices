@@ -1,0 +1,22 @@
+{% extends "html_layout.html" %}
+{% block title %}Available Races{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <h2>Available Race Databases</h2>
+  {% if db_files %}
+    <ul class="list-group">
+      {% for db_file in db_files %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ db_file }}
+          <div>
+            <a href="{{ url_for('individual_results', db_filename=db_file) }}" class="btn btn-primary btn-sm me-2">Individual Results</a>
+            <a href="{{ url_for('team_results', db_filename=db_file) }}" class="btn btn-secondary btn-sm">Team Results</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No race databases found.</p>
+  {% endif %}
+</div>
+{% endblock %}

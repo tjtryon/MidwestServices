@@ -1,0 +1,18 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Race Dashboard</h2>
+  <ul class="list-group">
+    {% for link in race_links %}
+    <li class="list-group-item">
+      <strong>Race {{ link.race_id }}</strong> —
+      <a href="{{ link.individual_url }}">Individual Results</a> |
+      <a href="{{ link.team_url }}">Team Results</a>
+    </li>
+    {% else %}
+    <li class="list-group-item">No race databases found in /data/.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<h2>Team Results - Race {{ race_id }}</h2>
+{% if team_totals %}
+  {% for team in team_totals %}
+  <div class="mb-4">
+    <h4>{{ team.team }} — Total Score: {{ team.score }}</h4>
+    <table class="table table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>Place</th>
+          <th>Bib</th>
+          <th>Name</th>
+          <th>Finish Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for runner in team.members %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ runner.bib }}</td>
+          <td>{{ runner.name }}</td>
+          <td>{{ runner.finish_time }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+{% else %}
+  <p class="text-center">No team results found for this race.</p>
+{% endif %}
+<a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Race Dashboard</a>
+{% endblock %}

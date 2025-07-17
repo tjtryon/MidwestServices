@@ -1,0 +1,108 @@
+# Race Timing System Documentation
+
+## Overview
+
+The Race Timing System is a comprehensive cross-country and track event timing application implemented in Python using Flask and SQLite. It supports both manual and RFID-based timing, real-time result tracking, multi-race day handling, team and individual scoring, GUI access, file input/output, and race result exports. It is optimized for Linux and supports live RFID input via a file-based watcher (e.g. Ipico UHF systems).
+
+## Key Features
+
+1. **Date-Based SQLite Database**
+
+   * Automatically generates a SQLite database named `YYYYMMDDRace.db` based on the system date.
+   * Supports multiple races (heats) per day using a `race_number` field.
+
+2. **Runner Registration and Input**
+
+   * Bulk import via CSV file (fields: `bib,name,team[,rfid_tag]`).
+   * GUI interface to manually assign RFID tags to runners pre-race.
+
+3. **Race Timing Modes**
+
+   * **Manual Timing**:
+
+     * Use spacebar to record finish time without a bib.
+     * Enter 3-digit bib + spacebar to record with bib.
+     * Assign bib later to unassigned times.
+   * **RFID Timing**:
+
+     * Watch `rfid_input.txt` for new RFID tags.
+     * Each tag is matched to a registered runner.
+     * Time recorded based on race start and scan.
+
+4. **Race Control**
+
+   * Start and stop race from the Flask GUI or console.
+   * Track elapsed time with millisecond accuracy.
+
+5. **Individual and Team Scoring**
+
+   * Individual results sorted by finish time.
+   * Team results sum top 5 finishers.
+   * 2 additional displacers are displayed.
+   * Each runner's place in their team is calculated.
+
+6. **Results Display and Export**
+
+   * View results by race number.
+   * Individual and team results web pages.
+   * Bootstrap-styled HTML export.
+   * Index page linking to each race's results.
+
+7. **GUI Features via Flask**
+
+   * Upload runner CSV.
+   * Assign RFID tags.
+   * View results.
+   * Admin interface for data entry.
+
+8. **Webcam Integration** (planned)
+
+   * Optional: capture webcam image per scan.
+   * Store photo path with runner.
+
+9. **Sound Alerts** (planned)
+
+   * Optional: Play alert on RFID scan.
+
+10. **Backup and Recovery** (planned)
+
+    * Automatic backups every 3 minutes.
+    * Merge/recover accidentally split databases.
+
+## File Naming Conventions
+
+* Database file: `YYYYMMDDRace.db`
+* Exported results: `results.html`, `individual_race_<n>.html`, `team_race_<n>.html`
+* Uploaded CSV: placed in `/uploads`
+* RFID input: `rfid_input.txt`
+* Runner photo directory: `static/photos/`
+
+## RFID Setup
+
+* RFID reader appends scanned tags to `rfid_input.txt`.
+* Each tag must match a runner's assigned RFID in the database.
+* Tags are processed live by a background thread.
+
+## Limitations & Requirements
+
+* Linux preferred (for file monitoring compatibility).
+* Python 3.8+ required.
+* Flask, SQLAlchemy, Bootstrap CDN.
+* RFID system must support appending to text files.
+
+## Upcoming Features
+
+* Live race dashboard.
+* Real-time team standings.
+* Web-based result editing.
+* Webcam finish line verification.
+* Centralized export of race statistics using matplotlib.
+
+## Contributors
+
+Developed by request with extensibility in mind for real race environments.
+
+## Support
+
+For questions or enhancements, submit issues or contact the system maintainer.
+

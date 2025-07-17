@@ -1,0 +1,126 @@
+Race Timing Console Application — Features & Usage Guide
+Overview
+This console application is designed to manage timing and scoring for cross country or similar races. It supports:
+
+Individual and team results
+
+Race timing with millisecond precision (system clock)
+
+RFID tag timing via live file monitoring
+
+Manual entry of finish times by bib number
+
+Support for multiple races/heats via race numbers
+
+Team scoring with top 5 finishers and 2 displacers
+
+Sound alerts on finish time entries
+
+Results storage in SQLite database files named by race date
+
+Importing runner data from CSV files
+
+Features
+1. Runner Data Management
+Import runners via CSV files with columns:
+bib, name, team, and optional rfid tag.
+
+Duplicate bibs or RFID tags are detected and skipped.
+
+2. Timing & Results Entry
+RFID Mode:
+Monitors a file named data/rfid_input.txt for new RFID tag scans.
+When a valid RFID is detected, the associated runner's finish time is recorded.
+
+Manual Mode:
+Allows entering bib numbers manually to record finish times.
+
+Supports multiple race numbers for heats. Each finish is associated with the current race number.
+
+3. Team Scoring
+Calculates team scores by summing places of the top 5 finishers per team.
+
+Includes 2 additional displacers for tie-breaks or influence.
+
+Teams with fewer than 5 finishers will not be scored.
+
+4. Sound Alerts
+Plays a beep sound on every recorded finish to alert the operator.
+
+5. Data Persistence
+Stores all runners and results in a SQLite database named as YYYYMMDDRace.db inside the data directory.
+
+Database created automatically for the current date on program start.
+
+How to Use
+Startup
+Run the program:
+
+nginx
+Copy code
+python race_timing_console.py
+If needed, create and place a beep.mp3 sound file in the same directory.
+
+Main Menu Options
+Load runners CSV
+
+Enter the path to your CSV file containing runners.
+
+The program imports runners into the database.
+
+Duplicate bibs or RFIDs are skipped with a warning.
+
+Record manual result
+
+Enter a bib number to log a finish time for that runner.
+
+The finish time is recorded with the current race number.
+
+List race results
+
+Displays all finishers for the current race, ordered by finish time.
+
+Show team scores
+
+Displays team rankings based on the sum of top 5 finishers' places plus displacers.
+
+Change race number
+
+Change the active race/heat number to separate results by race.
+
+Quit
+
+Safely exits the program, closes database connections, and stops RFID monitoring.
+
+RFID Monitoring
+The program watches the file data/rfid_input.txt for new RFID scans.
+
+When new tags are appended, it looks up the bib and logs finish times automatically.
+
+Unknown RFID tags produce a warning message.
+
+CSV Format for Runners
+Example CSV headers and data:
+
+python-repl
+Copy code
+bib,name,team,rfid
+101,John Doe,Red Hawks,123456789ABC
+102,Jane Smith,Blue Wolves,987654321DEF
+...
+Data Storage
+Runner and result data is stored in data/YYYYMMDDRace.db (e.g. 20250626Race.db).
+
+This allows running and storing results for multiple days.
+
+Notes
+Ensure RFID reader software appends new tag reads to data/rfid_input.txt.
+
+For sound alerts, ensure beep.mp3 is present.
+
+Team scoring requires at least 5 finishers per team.
+
+Bib numbers must be numeric.
+
+Results are stored with timestamped finish times (HH:MM:SS).
+

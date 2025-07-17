@@ -1,0 +1,37 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Admin Control Panel</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="list-group">
+    <a href="{{ url_for('edit_results') }}" class="list-group-item list-group-item-action">
+      🛠️ Edit Race Results
+    </a>
+    <a href="{{ url_for('documentation') }}" class="list-group-item list-group-item-action">
+      📄 View Documentation
+    </a>
+    <a href="{{ url_for('usage_notes') }}" class="list-group-item list-group-item-action">
+      📚 View Usage Notes
+    </a>
+    <a href="{{ url_for('title_slide') }}" target="_blank" class="list-group-item list-group-item-action">
+      📄 View Title Slide (PDF)</a>
+    </a>
+    <a href="{{ url_for('logout') }}" class="list-group-item list-group-item-action text-danger">
+      🚪 Logout
+    </a>
+  </div>
+</div>
+{% endblock %}
+

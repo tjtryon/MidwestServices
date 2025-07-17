@@ -1,0 +1,16 @@
+{% extends "html_layout.html" %}
+{% block title %}Home - Race Timing System{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <h1>Welcome to the Race Timing System</h1>
+  <p>Use the navigation bar to access various sections:</p>
+  <div class="list-group">
+    <a href="{{ url_for('upload_runners') }}" class="list-group-item list-group-item-action">Upload Runners</a>
+    <a href="{{ url_for('assign_rfid') }}" class="list-group-item list-group-item-action">Assign RFID Tags</a>
+    <a href="{{ url_for('races') }}" class="list-group-item list-group-item-action">View Race Results</a>
+    <a href="{{ url_for('documentation') }}" class="list-group-item list-group-item-action">Documentation</a>
+    <a href="{{ url_for('usage_notes') }}" class="list-group-item list-group-item-action">Usage Notes</a>
+    <a href="{{ url_for('admin') }}" class="list-group-item list-group-item-action">Admin Panel</a>
+  </div>
+</div>
+{% endblock %}

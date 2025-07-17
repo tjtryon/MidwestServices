@@ -1,0 +1,16 @@
+{% extends "html_layout.html" %}
+{% block title %}Admin Panel - Race Timing System{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <h1>Admin Panel</h1>
+  <p>Use this panel to manage system settings and data:</p>
+  <div class="list-group">
+    <a href="{{ url_for('upload_runners') }}" class="list-group-item list-group-item-action">Upload Runners CSV</a>
+    <a href="{{ url_for('assign_rfid') }}" class="list-group-item list-group-item-action">Assign RFID Tags</a>
+    <a href="{{ url_for('results') }}" class="list-group-item list-group-item-action">View Results</a>
+    <a href="{{ url_for('documentation') }}" class="list-group-item list-group-item-action">View Documentation</a>
+    <a href="{{ url_for('usage_notes') }}" class="list-group-item list-group-item-action">View Usage Notes</a>
+    <a href="{{ url_for('races') }}" class="list-group-item list-group-item-action">Race List & Results</a>
+  </div>
+</div>
+{% endblock %}

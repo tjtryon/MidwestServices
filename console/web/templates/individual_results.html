@@ -1,0 +1,30 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<h2>Individual Results - Race {{ race_id }}</h2>
+<table class="table table-striped table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>Place</th>
+      <th>Bib</th>
+      <th>Name</th>
+      <th>Team</th>
+      <th>Finish Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for runner in runners %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ runner.bib }}</td>
+      <td>{{ runner.name }}</td>
+      <td>{{ runner.team }}</td>
+      <td>{{ runner.finish_time }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center">No individual results found for this race.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Race Dashboard</a>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Help & Frequently Asked Questions</h2>
+
+  <div class="accordion" id="faqAccordion">
+
+    <!-- General -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingGeneral">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true">
+          General
+        </button>
+      </h2>
+      <div id="collapseGeneral" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          <strong>Q: What is this website for?</strong><br>
+          A: This site lets you view individual and team race results for past events. You can also contact the organizers or get help using this page.
+        </div>
+      </div>
+    </div>
+
+    <!-- Individual Results -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingIndividual">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIndividual">
+          Individual Results
+        </button>
+      </h2>
+      <div id="collapseIndividual" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          <p><strong>Q: How do I find my individual race results?</strong><br>
+          A: Go to the home page and click on the event date and race number. Then click on the <strong>Individual Results</strong> link to see your bib number, name, and finish time.</p>
+
+          <p><strong>Q: I don’t see my name or bib number. What should I do?</strong><br>
+          A: This could mean your bib was not scanned or assigned correctly. Please contact the race organizer to have it corrected.</p>
+
+          <p><strong>Q: My finish time looks incorrect. Can it be changed?</strong><br>
+          A: If you believe there is a mistake, please contact race staff with your bib number and any supporting details.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Results -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTeam">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTeam">
+          Team Results
+        </button>
+      </h2>
+      <div id="collapseTeam" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          <p><strong>Q: How are team scores calculated?</strong><br>
+          A: Teams are scored based on the finish positions of their top 5 runners. Lower scores are better.</p>
+
+          <p><strong>Q: Why isn't my team listed in the team results?</strong><br>
+          A: Teams only appear if there are at least 2 or more runners from the same team. Make sure your bib was registered with the correct team name.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingNav">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNav">
+          Navigation
+        </button>
+      </h2>
+      <div id="collapseNav" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          <p><strong>Q: What’s the difference between Individual Results and Team Results?</strong><br>
+          A: Individual Results show times for each runner. Team Results group runners by team and calculate team rankings based on their performance.</p>
+
+          <p><strong>Q: How do I get back to the main page?</strong><br>
+          A: You can click “Home” in the navigation bar or return to the site’s main index from any page.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOther">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOther">
+          Other
+        </button>
+      </h2>
+      <div id="collapseOther" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          <p><strong>Q: Can I download or print my results?</strong><br>
+          A: Yes! You can use your browser’s print option (usually <kbd>Ctrl+P</kbd> or <kbd>Cmd+P</kbd>) to save or print the results page.</p>
+
+          <p><strong>Q: I have another question that’s not listed here. What should I do?</strong><br>
+          A: Please visit the <a href="{{ url_for('contact_us') }}">Contact Us</a> page to send a message to the race organizers.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <a href="{{ url_for('edit_results') }}" class="btn btn-secondary mb-3">
+    ← Back to All Races
+  </a>
+
+  <h2>Edit Results for Race {{ race_id }}</h2>
+  <form method="POST">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Finish Position</th>
+          <th>Bib Number</th>
+          <th>Name</th>
+          <th>Finish Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in results %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            <input type="number" name="bib_{{ row['result_id'] }}" value="{{ row['bib'] }}" class="form-control" required>
+          </td>
+          <td>{{ row['name'] }}</td>
+          <td>{{ row['finish_time'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Update Results</button>
+  </form>
+</div>
+{% endblock %}

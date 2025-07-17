@@ -1,0 +1,151 @@
+{% extends "html\_layout.html" %}
+{% block title %}Race Timing System Documentation{% endblock %}
+
+
+
+  <style>
+    h2 {
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 0.3rem;
+      margin-top: 2rem;
+    }
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+    pre code {
+      background-color: #f8f9fa;
+      padding: 0.5rem;
+      display: block;
+      border: 1px solid #dee2e6;
+      border-radius: 0.25rem;
+    }
+  </style>
+
+{% block content %}
+
+
+<body>
+  <div class="container my-5">
+    <h1 class="mb-4">Race Timing System Documentation</h1>
+
+```
+<h2 class="h4">Overview</h2>
+<p>The Race Timing System is a feature-rich cross-country race management solution combining a desktop GUI (GTK-based) and a web interface (Flask-based). It supports both manual and RFID-based finish recording, team and individual scoring, real-time data viewing, and database-driven persistence.</p>
+
+<h2 class="h4">System Components</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item"><strong>race-timer-rfid-gui.py</strong> – Python GTK GUI app for live timing, RFID scanning, and manual input.</li>
+  <li class="list-group-item"><strong>app.py</strong> – Flask web app for uploading runner data, managing races, viewing results, and assigning RFID tags.</li>
+  <li class="list-group-item"><strong>SQLite Database</strong> – Automatically named <code>YYYYMMDDRace.db</code>, one per race day. Stores runners, results, races, and RFID mappings.</li>
+</ul>
+
+<h2 class="h4">Core Features</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">Start race timing with millisecond accuracy</li>
+  <li class="list-group-item">Manual input via spacebar (with or without BIBs)</li>
+  <li class="list-group-item">RFID tag support using file watching on <code>rfid_input.txt</code></li>
+  <li class="list-group-item">Assign BIBs to spacebar-timed results after race</li>
+  <li class="list-group-item">Assign RFID tags to runners via GUI or upload</li>
+  <li class="list-group-item">Multi-race per day support with race number</li>
+  <li class="list-group-item">Individual and team scoring (top 5 scorers, 2 displacers)</li>
+  <li class="list-group-item">Display place in team for each runner</li>
+  <li class="list-group-item">HTML export of results with Bootstrap styling</li>
+  <li class="list-group-item">Web dashboard to view results live (Flask server)</li>
+  <li class="list-group-item">Auto-backup of database every 3 minutes</li>
+  <li class="list-group-item">Merge and recover split databases</li>
+</ul>
+
+<h2 class="h4">Web Interface Features (Flask)</h2>
+<table class="table table-bordered">
+  <thead class="table-light">
+    <tr><th>Route</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>/</code></td><td>Home page</td></tr>
+    <tr><td><code>/upload_runners</code></td><td>Upload CSV of runners</td></tr>
+    <tr><td><code>/assign_rfid</code></td><td>Form to assign RFID to BIB</td></tr>
+    <tr><td><code>/results</code></td><td>View results by race number</td></tr>
+    <tr><td><code>/documentation</code></td><td>View the documentation</td></tr>
+  </tbody>
+</table>
+
+<h2 class="h4">Data Input</h2>
+<p>CSV runner file format:</p>
+<pre><code>bib,name,team,rfid
+```
+
+101,John Smith,Team A,1000001
+102,Jane Doe,Team A,1000002
+...</code></pre>
+
+```
+<h2 class="h4">Timing Options</h2>
+<ol>
+  <li><strong>Manual</strong>
+    <ul>
+      <li>Spacebar: logs time without BIB</li>
+      <li>BIB + Spacebar (e.g. <code>123 </code>): logs with known BIB</li>
+      <li>Assign BIB later to unknowns</li>
+    </ul>
+  </li>
+  <li><strong>RFID</strong>
+    <ul>
+      <li>System watches <code>rfid_input.txt</code></li>
+      <li>Each tag must be assigned to a runner beforehand</li>
+      <li>Timestamp recorded on scan</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 class="h4">Data Management</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">Database: <code>YYYYMMDDRace.db</code></li>
+  <li class="list-group-item">Tables: runners, results, races, rfid_log</li>
+  <li class="list-group-item">Previous results can be queried by date and race number</li>
+  <li class="list-group-item">Results never deleted when new races are started</li>
+</ul>
+
+<h2 class="h4">Results Export</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">HTML pages per race</li>
+  <li class="list-group-item">Bootstrap-styled</li>
+  <li class="list-group-item">Links to team and individual pages from an index</li>
+  <li class="list-group-item">Flask live view shows team places</li>
+</ul>
+
+<h2 class="h4">Planned Features</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">Webcam photo capture per RFID scan</li>
+  <li class="list-group-item">Sound alerts on scan</li>
+  <li class="list-group-item">Matplotlib charts of race stats</li>
+  <li class="list-group-item">Web editing of runners and results</li>
+</ul>
+
+<h2 class="h4">Usage Summary</h2>
+<ol class="ps-3">
+  <li>Upload runners via web or load CSV in GUI</li>
+  <li>Assign RFID tags</li>
+  <li>Start race from GUI</li>
+  <li>Log finishes via spacebar, RFID, or BIB input</li>
+  <li>Stop race</li>
+  <li>View results in GUI or web</li>
+  <li>Export to HTML</li>
+  <li>Backups are automatic every 3 minutes</li>
+</ol>
+
+<h2 class="h4">System Requirements</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">Linux OS recommended</li>
+  <li class="list-group-item">Python 3.8+</li>
+  <li class="list-group-item">GTK4 with PyGObject</li>
+  <li class="list-group-item">Flask, SQLAlchemy, Matplotlib</li>
+  <li class="list-group-item">Bootstrap via CDN</li>
+  <li class="list-group-item">RFID reader must write to <code>rfid_input.txt</code></li>
+</ul>
+
+<h2 class="h4">Support</h2>
+<p>For questions, contact the system maintainer or developer. Contributions welcome.</p>
+
+
+
+{% endblock %}

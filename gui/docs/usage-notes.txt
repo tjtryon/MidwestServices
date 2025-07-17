@@ -1,0 +1,18 @@
+Notes on Usage
+Database: Created as YYYYMMDDrace.db automatically in the working folder.
+
+Runners: Add runners via CSV import or Flask admin interface. Include bib, name, team, and RFID tag.
+
+RFID Input: Monitored from file rfid_input.txt or via TCP port (default 9999).
+
+Manual Timing: Use GTK GUI text entry for bib/time input or spacebar for unassigned.
+
+Webcam: Connected to system default camera; photos saved on finishes to photos/.
+
+Backup: Database backups saved every 3 minutes in db_backups/.
+
+Flask Server: Run on port 5000, showing live results with photos and team place.
+
+Assign RFID: Use GUI button to assign RFID tags to runners before race.
+
+Sound Alerts: You can add sound alert calls in RFID scan handlers easily.

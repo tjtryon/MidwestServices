@@ -1,0 +1,21 @@
+bib,name,team,rfid
+101,John Smith,Team A,1000001
+102,Jane Doe,Team A,1000002
+103,Bob Johnson,Team B,1000003
+104,Alice Williams,Team B,1000004
+105,Chris Brown,Team C,1000005
+106,Emily Davis,Team C,1000006
+107,Michael Miller,Team D,1000007
+108,Sarah Wilson,Team D,1000008
+109,David Moore,Team E,1000009
+110,Laura Taylor,Team E,1000010
+111,Daniel Anderson,Team F,1000011
+112,Nancy Thomas,Team F,1000012
+113,Kevin Jackson,Team G,1000013
+114,Lisa White,Team G,1000014
+115,Jason Harris,Team H,1000015
+116,Karen Martin,Team H,1000016
+117,Steven Lee,Team I,1000017
+118,Megan Clark,Team I,1000018
+119,Eric Lewis,Team J,1000019
+120,Amanda Walker,Team J,1000020

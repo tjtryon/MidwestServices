@@ -1,0 +1,57 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">📘 The Race Timing System for Cross Country and Road Races – Documentation</h2>
+
+  <p>Welcome to the 🏁 <strong>The Race Timing System for Cross Country and Road Races</strong>. This platform lets you manage, time, and display race results for cross country and road race events.</p>
+
+  <h4>⚙️ Console Features</h4>
+  <ul>
+    <li>RFID scanning via file watcher 🏷️</li>
+    <li>Manual finish entry ⌨️</li>
+    <li>Millisecond timing ⏱️</li>
+    <li>Team scoring 🥇</li>
+  </ul>
+
+  <h4>🌐 Flask Web Features</h4>
+  <ul>
+    <li>View results online 🌍</li>
+    <li>Edit race results 🔧</li>
+    <li>View usage notes 📚 and documentation 📑</li>
+  </ul>
+
+  <h4>🔧 Installation</h4>
+<pre>
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cd console
+python3 race_timing_console.py
+</pre>
+
+  <h4>📂 Console Directory Structure</h4>
+<pre>
+console/
+├── data/  🗄️ Race databases
+├── web/   🌐 Flask app
+├── race_timing_console.py ⚙️ Console CLI
+└── requirements.txt 📜
+</pre>
+
+  <h4>🖥️ Screenshots</h4>
+  <p><img src="{{ url_for('static', filename='screenshots/admin_dashboard.png') }}" class="img-fluid mb-3"></p>
+  <p><img src="{{ url_for('static', filename='screenshots/individual_results.png') }}" class="img-fluid mb-3"></p>
+  <p><img src="{{ url_for('static', filename='screenshots/edit_results.png') }}" class="img-fluid mb-3"></p>
+
+  <h4>🛠️ Troubleshooting</h4>
+  <ul>
+    <li><strong>Flask app won't start:</strong> Check your Python version and virtual environment.</li>
+    <li><strong>Login fails:</strong> Confirm config.db has an admin user.</li>
+    <li><strong>RFID scans missing:</strong> Verify the RFID input file is being updated.</li>
+    <li><strong>No sound:</strong> Ensure <code>beep.mp3</code> is present in the directory.</li>
+  </ul>
+
+  <p class="mt-4">For help, visit the <a href="{{ url_for('help') }}">Help page</a>.</p>
+</div>
+{% endblock %}
