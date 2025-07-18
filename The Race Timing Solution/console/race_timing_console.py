@@ -1,3 +1,5 @@
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 """ race_timing_console.py
 Author: TJ Tryon
 Date: July 17, 2025
@@ -55,6 +57,28 @@ logic program for This program is a the backend, which woould be handled by the 
     - The Flack application, and all documentation is located under the web/ folder, and can be accessed by running:
     "flack run" while in a console window in the web directory, as long as the system has imported the Flack module.
     please see the documentation under the web directory for more information on this feature.
+=======
+=======
+>>>>>>> Stashed changes
+"""
+race_timing_console.py
+Author: TJ Tryon
+Date: July 18, 2025
+Program: The Race Timing Solution (TRT)
+
+This Python program helps time cross country and road races.
+It allows race organizers to:
+- Create a race database
+- Load runners from a CSV file
+- Start a race and record finish times
+- View individual and team results
+
+You can use it in the terminal (console) or with the GUI.
+Results are saved in an SQLite database.
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 """
 
 import sqlite3
@@ -64,6 +88,8 @@ import glob
 import csv
 from playsound import playsound
 import bcrypt
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import hashlib
 import getpass
 
@@ -87,6 +113,25 @@ def initialize_config_db():
     """
     This function creates a special configuration database to store admin info.
     If it doesn’t exist, it will create it and ask for an admin username and password.
+=======
+=======
+>>>>>>> Stashed changes
+import getpass
+
+# Global variables used throughout the program
+DB_FILENAME = ""
+race_started = False
+race_stopped = False
+race_start_time = None
+
+def initialize_config_db():
+    """
+    Checks if the config.db exists. If not, it creates it and
+    asks the user to set an admin username and password.
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     """
     data_dir = os.path.join(os.getcwd(), 'data')
     if not os.path.exists(data_dir):
@@ -95,11 +140,23 @@ def initialize_config_db():
     config_db_path = os.path.join(data_dir, 'config.db')
 
     if not os.path.exists(config_db_path):
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         print("No config.db found — creating new configuration database in /data/...")
         conn = sqlite3.connect(config_db_path)
         c = conn.cursor()
 
         # Create a place to store usernames and passwords
+=======
+        print("No config.db found — creating one in /data/")
+        conn = sqlite3.connect(config_db_path)
+        c = conn.cursor()
+>>>>>>> Stashed changes
+=======
+        print("No config.db found — creating one in /data/")
+        conn = sqlite3.connect(config_db_path)
+        c = conn.cursor()
+>>>>>>> Stashed changes
         c.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -108,7 +165,13 @@ def initialize_config_db():
             )
         ''')
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         # Ask for an admin username and password
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         admin_username = input("Enter admin username: ").strip()
         while not admin_username:
             print("Username cannot be empty.")
@@ -119,6 +182,8 @@ def initialize_config_db():
             print("Password cannot be empty.")
             admin_password = getpass.getpass("Enter admin password: ").strip()
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         # Save the password safely using bcrypt (like locking it in a safe)
         password_hash = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt())
         c.execute('INSERT INTO users (username, password_hash) VALUES (?, ?)',
@@ -134,10 +199,32 @@ def get_next_db_filename():
     """
     This function helps create a name for a new race database.
     The name will include today's date and a number if there are multiple races.
+=======
+=======
+>>>>>>> Stashed changes
+        password_hash = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt())
+        c.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (admin_username, password_hash))
+
+        conn.commit()
+        conn.close()
+        print("Config database created and admin user saved.")
+    else:
+        print("Config database already exists.")
+
+def get_next_db_filename():
+    """
+    Generates a unique filename for today's race in the format:
+    data/YYYYMMDD-XX-race.db
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     """
     today = datetime.datetime.now().strftime('%Y%m%d')
     os.makedirs('data', exist_ok=True)
     existing = glob.glob(f"data/{today}-??-race.db")
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     seq_nums = []
     for fname in existing:
         try:
@@ -145,13 +232,27 @@ def get_next_db_filename():
             seq_nums.append(seq)
         except:
             pass
+=======
+    seq_nums = [int(f.split("-")[1]) for f in existing if "-" in f and f.split("-")[1].isdigit()]
+>>>>>>> Stashed changes
+=======
+    seq_nums = [int(f.split("-")[1]) for f in existing if "-" in f and f.split("-")[1].isdigit()]
+>>>>>>> Stashed changes
     next_seq = max(seq_nums) + 1 if seq_nums else 1
     return f"data/{today}-{next_seq:02d}-race.db"
 
 def init_db(new_db=True):
     """
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     This function sets up the race database.
     If it's a new database, it creates it and sets up places to store race results and runner info.
+=======
+    Initializes a new or existing race database.
+>>>>>>> Stashed changes
+=======
+    Initializes a new or existing race database.
+>>>>>>> Stashed changes
     """
     global DB_FILENAME
     os.makedirs("data", exist_ok=True)
@@ -162,7 +263,13 @@ def init_db(new_db=True):
 
     conn = sqlite3.connect(DB_FILENAME)
     c = conn.cursor()
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # Create a table to store runner info
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     c.execute('''
         CREATE TABLE IF NOT EXISTS runners (
             bib INTEGER PRIMARY KEY,
@@ -171,7 +278,13 @@ def init_db(new_db=True):
             rfid TEXT
         )
     ''')
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # Create a table to store race results
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     c.execute('''
         CREATE TABLE IF NOT EXISTS results (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -185,8 +298,16 @@ def init_db(new_db=True):
 
 def load_existing_db():
     """
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     This function loads an existing database from the 'data' folder.
     It asks the user for the name of the database to load.
+=======
+    Prompts the user to load a previous race database from the /data folder.
+>>>>>>> Stashed changes
+=======
+    Prompts the user to load a previous race database from the /data folder.
+>>>>>>> Stashed changes
     """
     global DB_FILENAME
     filename = input("Enter DB filename in data/: ").strip()
@@ -194,6 +315,8 @@ def load_existing_db():
     if os.path.exists(path):
         DB_FILENAME = path
         print(f"[INFO] Loaded database: {DB_FILENAME}")
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     else:
         print("[ERROR] File does not exist.")
         return
@@ -211,6 +334,25 @@ def load_runners_from_csv(csv_file):
     global DB_FILENAME
     if not DB_FILENAME:
         print("[ERROR] No database loaded. Create or load a DB first.")
+=======
+=======
+>>>>>>> Stashed changes
+        init_db(new_db=False)
+    else:
+        print("[ERROR] File does not exist.")
+
+def load_runners_from_csv(csv_file):
+    """
+    Loads runners from a CSV file and saves them to the database.
+    CSV should contain: bib, name, team, rfid
+    """
+    global DB_FILENAME
+    if not DB_FILENAME:
+        print("[ERROR] No database loaded.")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         return
 
     full_path = os.path.join('data', csv_file)
@@ -233,15 +375,37 @@ def load_runners_from_csv(csv_file):
 
 def start_race():
     """
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     This function starts the race and begins recording times for runners.
     """
     global race_started, race_stopped, race_start_time
     if not DB_FILENAME:
         print("[ERROR] No database loaded. Create or load a DB first.")
+=======
+=======
+>>>>>>> Stashed changes
+    Starts the race and records the start time.
+    """
+    global race_started, race_stopped, race_start_time
+    if not DB_FILENAME:
+        print("[ERROR] No database loaded.")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         return
     if race_started:
         print("[INFO] Race is already running.")
         return
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
+=======
+
+>>>>>>> Stashed changes
     race_started = True
     race_stopped = False
     race_start_time = datetime.datetime.now()
@@ -250,12 +414,22 @@ def start_race():
 
 def stop_race():
     """
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     This function stops the race and resets the race status.
+=======
+    Stops the race and resets the race status.
+>>>>>>> Stashed changes
+=======
+    Stops the race and resets the race status.
+>>>>>>> Stashed changes
     """
     global race_started, race_stopped
     if not race_started:
         print("[INFO] Race hasn't started yet.")
         return
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     race_stopped = True
     race_started = False
     print("[INFO] Race stopped. Returning to menu.")
@@ -267,6 +441,23 @@ def record_result(bib):
     """
     if not race_started or race_stopped:
         print("[WARNING] Cannot record result — race is not active!")
+=======
+=======
+>>>>>>> Stashed changes
+    race_started = False
+    race_stopped = True
+    print("[INFO] Race stopped.")
+
+def record_result(bib):
+    """
+    Records a runner's finish time based on their bib number.
+    """
+    if not race_started or race_stopped:
+        print("[WARNING] Race is not active.")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         return
 
     conn = sqlite3.connect(DB_FILENAME)
@@ -275,6 +466,8 @@ def record_result(bib):
     elapsed = (finish_time - race_start_time).total_seconds()
     race_date = race_start_time.strftime('%Y-%m-%d')
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # Default bib to 0 if unknown
     if bib == "":
         bib_value = 0
@@ -286,6 +479,19 @@ def record_result(bib):
             return
 
     # Save the result in the database
+=======
+=======
+>>>>>>> Stashed changes
+    try:
+        bib_value = int(bib) if bib else 0
+    except ValueError:
+        print("[ERROR] Invalid bib number.")
+        return
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     c.execute('''
         INSERT INTO results (bib, finish_time, race_date)
         VALUES (?, ?, ?)
@@ -296,6 +502,8 @@ def record_result(bib):
     bib_display = bib if bib else "UNKNOWN"
     print(f"[RESULT] Bib {bib_display} finished in {elapsed:.2f}s")
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # Play a sound to confirm the finish
     try:
         playsound('beep.mp3')
@@ -313,10 +521,33 @@ def live_race_input():
         bib = input("> ").strip()
         if bib.lower() == 'exit':
             print("[INFO] Exiting live input mode and returning to menu.")
+=======
+=======
+>>>>>>> Stashed changes
+    try:
+        playsound('beep.mp3')
+    except:
+        print("[Sound] Could not play beep sound.")
+
+def live_race_input():
+    """
+    Lets user enter bib numbers as runners finish.
+    """
+    print("[INPUT] Enter bib number, or press Enter for unknown finisher.")
+    print("Type 'exit' to stop the race.")
+    while race_started and not race_stopped:
+        bib = input("> ").strip()
+        if bib.lower() == 'exit':
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             stop_race()
             break
         record_result(bib)
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # ==============================
 # Results (functions for showing race results)
 # ==============================
@@ -329,6 +560,21 @@ def show_individual_results():
     if not DB_FILENAME:
         print("[ERROR] No database loaded.")
         return
+=======
+=======
+>>>>>>> Stashed changes
+def show_individual_results():
+    """
+    Shows all runners and their finish times.
+    """
+    if not DB_FILENAME:
+        print("[ERROR] No database loaded.")
+        return
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     conn = sqlite3.connect(DB_FILENAME)
     c = conn.cursor()
     c.execute('''
@@ -342,7 +588,13 @@ def show_individual_results():
         ORDER BY results.finish_time ASC
     ''')
     rows = c.fetchall()
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     print("\n=== Individual Results ===")
     for i, row in enumerate(rows, 1):
         print(f"{i}. Place: {i} | Bib: {row[0]}, Name: {row[1]}, Team: {row[2]}, Time: {row[3]:.2f}s")
@@ -350,9 +602,19 @@ def show_individual_results():
 
 def show_team_results():
     """
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     This function shows the team results by calculating scores based on the top finishers.
     """
     global DB_FILENAME
+=======
+    Shows team scores using top 5 runners and 2 displacers.
+    """
+>>>>>>> Stashed changes
+=======
+    Shows team scores using top 5 runners and 2 displacers.
+    """
+>>>>>>> Stashed changes
     if not DB_FILENAME:
         print("[ERROR] No database loaded.")
         return
@@ -373,6 +635,8 @@ def show_team_results():
 
     place = 1
     team_places = {}
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
     # Collect places for each team
     for row in rows:
@@ -383,11 +647,25 @@ def show_team_results():
         place += 1
 
     print("\n=== Team Results (Scoring by Place: top 5 + 2 displacers) ===")
+=======
+=======
+>>>>>>> Stashed changes
+    for row in rows:
+        team_places.setdefault(row[0], []).append(place)
+        place += 1
+
+    print("\n=== Team Results ===")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     for team, places in team_places.items():
         scorers = places[:5]
         displacers = places[5:7] if len(places) > 5 else []
         total_score = sum(scorers)
         print(f"Team: {team}")
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         print(f"  Scorers (places): {scorers} -> Total: {total_score}")
         if displacers:
             print(f"  Displacers (places): {displacers}")
@@ -397,26 +675,59 @@ def show_all_runners():
     This function shows a list of all runners in the database, grouped by team.
     """
     global DB_FILENAME
+=======
+=======
+>>>>>>> Stashed changes
+        print(f"  Scorers: {scorers} -> Total: {total_score}")
+        if displacers:
+            print(f"  Displacers: {displacers}")
+
+def show_all_runners():
+    """
+    Displays all runners grouped by team.
+    """
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     if not DB_FILENAME:
         print("[ERROR] No database loaded.")
         return
 
     conn = sqlite3.connect(DB_FILENAME)
     c = conn.cursor()
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     c.execute('''
         SELECT bib, name, team
         FROM runners
         ORDER BY team ASC, bib ASC
     ''')
+=======
+    c.execute('SELECT bib, name, team FROM runners ORDER BY team, bib')
+>>>>>>> Stashed changes
+=======
+    c.execute('SELECT bib, name, team FROM runners ORDER BY team, bib')
+>>>>>>> Stashed changes
     rows = c.fetchall()
     conn.close()
 
     if not rows:
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         print("[INFO] No runners found in the database.")
+=======
+        print("[INFO] No runners found.")
+>>>>>>> Stashed changes
+=======
+        print("[INFO] No runners found.")
+>>>>>>> Stashed changes
         return
 
     print("\n=== Runners by Team ===")
     current_team = None
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     for row in rows:
         bib, name, team = row
         if team != current_team:
@@ -431,6 +742,22 @@ def show_all_runners():
 def main_menu():
     """
     This function shows the main menu and lets the user choose options.
+=======
+=======
+>>>>>>> Stashed changes
+    for bib, name, team in rows:
+        if team != current_team:
+            print(f"\nTeam: {team}")
+            current_team = team
+        print(f"  Bib: {bib} | Name: {name}")
+
+def main_menu():
+    """
+    The main menu for console users to run the system.
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     """
     while True:
         print("\n=== Race Timing Menu ===")
@@ -466,7 +793,15 @@ def main_menu():
             print("Invalid choice.")
 
 if __name__ == "__main__":
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # Make sure the config database exists, creating it if missing
     initialize_config_db()
     # Show the main menu
+=======
+    initialize_config_db()
+>>>>>>> Stashed changes
+=======
+    initialize_config_db()
+>>>>>>> Stashed changes
     main_menu()
