@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkApplicationWindow" id="main_window">
+    <property name="default_width">400</property>
+    <property name="default_height">300</property>
+    <child>
+      <object class="GtkBox" id="main_box">
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <property name="margin_top">20</property>
+        <property name="margin_bottom">20</property>
+        <property name="margin_start">20</property>
+        <property name="margin_end">20</property>
+
+        <child>
+          <object class="GtkButton" id="create_button">
+            <property name="label">Create Race DB</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="load_button">
+            <property name="label">Load Race DB</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="load_runners_button">
+            <property name="label">Load Runners CSV</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="start_race_button">
+            <property name="label">Start Race</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="show_individual_button">
+            <property name="label">Show Individual Results</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="show_team_button">
+            <property name="label">Show Team Results</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="show_runners_button">
+            <property name="label">Show All Runners</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="quit_button">
+            <property name="label">Quit</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

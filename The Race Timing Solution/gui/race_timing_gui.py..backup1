@@ -1,0 +1,178 @@
+""" race_timing_gui.py
+Author: TJ Tryon
+Date: July 17, 2025
+Name: The Race Timing Solution for Cross Country and Road Races (TRT) - GTK GUI
+
+Graphical version of the race timing software using GTK4. Integrates with the shared
+logic in race_timing_console.py, and allows the user to create/load race DBs, load runners,
+start and stop races, enter bibs, and view results.
+"""
+
+import gi
+import os
+import sys
+from datetime import datetime
+
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'console')))
+import race_timing_console as rtc
+
+
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gtk
+
+class RaceTimingApp(Gtk.Application):
+    def __init__(self):
+        super().__init__(application_id="org.midwestservices.RaceTimingGUI")
+
+    def do_activate(self, *args):
+        rtc.initialize_config_db()
+        self.window = Gtk.ApplicationWindow(application=self)
+        self.window.set_title("Race Timing Menu")
+        self.window.set_default_size(400, 300)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        box.set_margin_top(20)
+        box.set_margin_bottom(20)
+        box.set_margin_start(20)
+        box.set_margin_end(20)
+
+        # Buttons
+        for label, handler in [
+            ("Create New Race Database", self.create_new_db),
+            ("Load Existing Race Database", self.load_existing_db),
+            ("Load Runners from CSV", self.load_runners),
+            ("Start Race", self.start_race),
+            ("Show Individual Results", self.show_individual_results),
+            ("Show Team Results", self.show_team_results),
+            ("Show All Runners", self.show_all_runners),
+        ]:
+            btn = Gtk.Button(label=label)
+            btn.connect("clicked", handler)
+            box.append(btn)
+
+        self.window.set_child(box)
+        self.window.present()
+
+    def prompt_text(self, title, message):
+        dialog = Gtk.Dialog(title=title, transient_for=self.window, modal=True)
+        entry = Gtk.Entry()
+        entry.set_margin_top(10)
+        entry.set_margin_bottom(10)
+        entry.set_margin_start(10)
+        entry.set_margin_end(10)
+
+        box = dialog.get_content_area()
+        box.append(Gtk.Label(label=message))
+        box.append(entry)
+
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.add_button("OK", Gtk.ResponseType.OK)
+        dialog.show()
+
+        response = dialog.run()
+        text = entry.get_text().strip()
+        dialog.destroy()
+
+        if response == Gtk.ResponseType.OK and text:
+            return text
+        return None
+
+    def create_new_db(self, button):
+        race_number = self.prompt_text("Race Number", "Enter race number (e.g. 01, 02):")
+        if not race_number:
+            return
+
+        date_str = datetime.now().strftime("%Y%m%d")
+        filename = f"{date_str}-{race_number.zfill(2)}-race.db"
+        path = os.path.join("data", filename)
+
+        if os.path.exists(path):
+            confirm = Gtk.MessageDialog(
+                transient_for=self.window, modal=True,
+                text=f"{filename} already exists. Overwrite?",
+                buttons=Gtk.ButtonsType.YES_NO
+            )
+            response = confirm.run()
+            confirm.destroy()
+            if response != Gtk.ResponseType.YES:
+                return
+
+        rtc.DB_FILENAME = path
+        rtc.init_db(new_db=True)
+
+    def load_existing_db(self, button):
+        filename = self.prompt_text("Load DB", "Enter database filename (e.g. 20250717-01-race.db):")
+        if filename:
+            full_path = os.path.join("data", filename)
+            if os.path.exists(full_path):
+                rtc.DB_FILENAME = full_path
+                rtc.init_db(new_db=False)
+            else:
+                self.show_message("File not found", f"{filename} not found in /data")
+
+    def load_runners(self, button):
+        csv_file = self.prompt_text("Load CSV", "Enter runner CSV filename (e.g. 20250717-runners-01.csv):")
+        if csv_file:
+            rtc.load_runners_from_csv(csv_file)
+
+    def start_race(self, button):
+        rtc.start_race()
+        self.bib_window = Gtk.ApplicationWindow(application=self)
+        self.bib_window.set_title("Enter Bib Numbers (type 'exit' to stop)")
+        self.bib_window.set_default_size(300, 100)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        box.set_margin_top(20)
+        box.set_margin_bottom(20)
+        box.set_margin_start(20)
+        box.set_margin_end(20)
+
+        self.bib_entry = Gtk.Entry()
+        self.bib_entry.set_placeholder_text("Enter Bib or 'exit'")
+        self.bib_entry.connect("activate", self.submit_bib)
+        box.append(self.bib_entry)
+
+        self.bib_window.set_child(box)
+        self.bib_window.present()
+
+    def submit_bib(self, entry):
+        bib = entry.get_text().strip()
+        if bib.lower() == "exit":
+            rtc.stop_race()
+            self.bib_window.close()
+        else:
+            rtc.record_result(bib)
+            entry.set_text("")
+
+    def show_individual_results(self, button):
+        self.show_text_window("Individual Results", rtc.capture_individual_results())
+
+    def show_team_results(self, button):
+        self.show_text_window("Team Results", rtc.capture_team_results())
+
+    def show_all_runners(self, button):
+        self.show_text_window("All Runners", rtc.capture_all_runners())
+
+    def show_text_window(self, title, content):
+        win = Gtk.ApplicationWindow(application=self)
+        win.set_title(title)
+        win.set_default_size(600, 400)
+
+        scroll = Gtk.ScrolledWindow()
+        view = Gtk.TextView()
+        view.set_editable(False)
+        view.get_buffer().set_text(content)
+
+        scroll.set_child(view)
+        win.set_child(scroll)
+        win.present()
+
+    def show_message(self, title, message):
+        dialog = Gtk.MessageDialog(transient_for=self.window, text=title, secondary_text=message, buttons=Gtk.ButtonsType.OK)
+        dialog.run()
+        dialog.destroy()
+
+if __name__ == "__main__":
+    app = RaceTimingApp()
+    app.run(sys.argv)
