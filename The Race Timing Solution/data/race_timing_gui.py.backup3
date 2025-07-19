@@ -1,0 +1,164 @@
+# race_timing_gui.py
+# Author: TJ Tryon
+# Updated: July 17, 2025
+# GTK 4 GUI frontend for The Race Timing Solution
+
+import gi
+import os
+import sys
+from datetime import datetime
+
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gtk, Gio
+
+# Ensure console directory is accessible
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'console'))
+import race_timing_console as rtc
+
+class RaceTimingApp(Gtk.Application):
+
+    def __init__(self):
+        super().__init__(application_id='org.midwestservices.RaceTimingGUI')
+        self.builder = None
+        self.window = None
+
+    def do_activate(self, app):
+        rtc.initialize_config_db()
+
+        ui_path = os.path.join(os.path.dirname(__file__), 'ui.ui')
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(ui_path)
+
+        # Connect signals to handler methods
+        self.builder.connect_signals({
+            "on_create_clicked": self.on_create_clicked,
+            "on_load_clicked": self.on_load_clicked,
+            "on_load_runners_clicked": self.on_load_runners_clicked,
+            "on_start_race_clicked": self.on_start_race_clicked,
+            "on_show_individual_clicked": self.on_show_individual_clicked,
+            "on_show_team_clicked": self.on_show_team_clicked,
+            "on_show_runners_clicked": self.on_show_runners_clicked,
+            "on_quit_clicked": self.on_quit_clicked,
+        })
+
+        self.window = self.builder.get_object("main_window")
+        self.window.set_application(app)
+        self.window.present()
+
+    # === Signal Handlers ===
+
+    def on_create_clicked(self, button):
+        dialog = Gtk.AlertDialog.new()
+        dialog.set_title("Create Race DB")
+        dialog.set_body("Enter race number:")
+        entry = Gtk.Entry.new()
+        dialog.set_child(entry)
+
+        entry.set_placeholder_text("e.g. 1")
+        entry.set_margin_top(10)
+        dialog.add_response("ok", "OK")
+        dialog.add_response("cancel", "Cancel")
+        dialog.set_default_response("ok")
+
+        def response_cb(d, response_id):
+            if response_id == "ok":
+                race_num = entry.get_text()
+                if race_num.isdigit():
+                    rtc.create_race_database(int(race_num))
+            d.destroy()
+
+        dialog.connect("response", response_cb)
+        dialog.set_modal(True)
+        dialog.set_transient_for(self.window)
+        dialog.show()
+
+    def on_load_clicked(self, button):
+        dialog = Gtk.FileChooserNative.new("Open Race DB", self.window, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
+        filter_db = Gtk.FileFilter()
+        filter_db.set_name("SQLite DB files")
+        filter_db.add_pattern("*.db")
+        dialog.add_filter(filter_db)
+
+        def response_cb(d, response):
+            if response == Gtk.ResponseType.ACCEPT:
+                db_path = d.get_file().get_path()
+                rtc.DB_FILENAME = db_path
+                rtc.init_db(new_db=False)
+
+        dialog.connect("response", response_cb)
+        dialog.show()
+
+    def on_load_runners_clicked(self, button):
+        dialog = Gtk.FileChooserNative.new("Open Runners CSV", self.window, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
+        filter_csv = Gtk.FileFilter()
+        filter_csv.set_name("CSV files")
+        filter_csv.add_pattern("*.csv")
+        dialog.add_filter(filter_csv)
+
+        def response_cb(d, response):
+            if response == Gtk.ResponseType.ACCEPT:
+                csv_path = d.get_file().get_path()
+                rtc.load_runners_from_csv(csv_path)
+
+        dialog.connect("response", response_cb)
+        dialog.show()
+
+    def on_start_race_clicked(self, button):
+        def prompt_bib():
+            bib_dialog = Gtk.AlertDialog.new()
+            bib_dialog.set_title("Enter Bib Number")
+            bib_dialog.set_body("Enter bib number (leave blank to finish):")
+            entry = Gtk.Entry.new()
+            bib_dialog.set_child(entry)
+            entry.set_margin_top(10)
+            entry.set_placeholder_text("Bib number")
+            bib_dialog.add_response("ok", "OK")
+            bib_dialog.add_response("cancel", "Stop")
+
+            def on_response(d, response_id):
+                bib = entry.get_text().strip()
+                d.destroy()
+                if response_id == "ok" and bib:
+                    rtc.record_finish(bib)
+                    prompt_bib()  # loop
+            bib_dialog.connect("response", on_response)
+            bib_dialog.set_modal(True)
+            bib_dialog.set_transient_for(self.window)
+            bib_dialog.show()
+
+        prompt_bib()
+
+    def on_show_individual_clicked(self, button):
+        content = rtc.get_individual_results()
+        self._show_text("Individual Results", content)
+
+    def on_show_team_clicked(self, button):
+        content = rtc.get_team_results()
+        self._show_text("Team Results", content)
+
+    def on_show_runners_clicked(self, button):
+        content = rtc.get_all_runners()
+        self._show_text("All Runners", content)
+
+    def on_quit_clicked(self, button):
+        self.quit()
+
+    def _show_text(self, title, text):
+        dialog = Gtk.Window(title=title)
+        dialog.set_default_size(600, 400)
+
+        scrolled = Gtk.ScrolledWindow()
+        buffer = Gtk.TextBuffer()
+        buffer.set_text(text)
+        textview = Gtk.TextView.new_with_buffer(buffer)
+        textview.set_editable(False)
+        textview.set_wrap_mode(Gtk.WrapMode.WORD)
+        scrolled.set_child(textview)
+        dialog.set_child(scrolled)
+
+        dialog.set_transient_for(self.window)
+        dialog.present()
+
+if __name__ == "__main__":
+    app = RaceTimingApp()
+    app.run(sys.argv)

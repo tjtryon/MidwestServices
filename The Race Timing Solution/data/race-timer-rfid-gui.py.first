@@ -1,0 +1,77 @@
+""" race_timing_gui.py
+Author: TJ Tryon
+Date: July 17, 2025
+Name: The Race Timing Solution for Cross Country and Road Races (TRT) - GTK GUI
+
+This is the graphical version of the race timing software. It does the same work
+as the console version, but uses a GTK interface. It reuses functions from
+race_timing_console.py to make sure everything works the same way in both versions.
+
+When you start this program, it will ask you for a race number. That number will
+be used to create a database file with the date and race number in its name.
+The GUI then opens a race timing window.
+"""
+
+import gi
+import os
+import sys
+from datetime import datetime
+from project.console import race_timing_console as rtc
+
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gtk
+
+class RaceTimingApp(Gtk.Application):
+    def __init__(self):
+        # Set up the GTK Application with a unique name
+        super().__init__(application_id="org.midwestservices.RaceTimingGUI")
+
+    def do_activate(self, *args):
+        # Ask the user for the race number using a pop-up box
+        dialog = Gtk.MessageDialog(
+            transient_for=None,
+            modal=True,
+            buttons=Gtk.ButtonsType.OK_CANCEL,
+            text="Enter Race Number",
+        )
+        dialog.set_title("Race Setup")
+
+        entry = Gtk.Entry()
+        entry.set_placeholder_text("e.g., 1, 2, 3")
+        dialog.get_content_area().append(entry)
+        dialog.show()
+
+        response = dialog.run()
+        race_number = entry.get_text()
+        dialog.destroy()
+
+        # If user cancels or types a bad value, quit
+        if response != Gtk.ResponseType.OK or not race_number.isdigit():
+            print("Cancelled or invalid input.")
+            return
+
+        # Create the database name with today's date and race number
+        today = datetime.now().strftime("%Y%m%d")
+        db_name = f"{today}-race-{int(race_number):02d}.db"
+        db_path = os.path.join("data", db_name)
+        os.makedirs("data", exist_ok=True)
+        rtc.DB_FILENAME = db_path
+
+        # If the file doesn't exist, create a new database
+        if not os.path.exists(db_path):
+            rtc.init_db(new_db=True)
+        else:
+            rtc.init_db(new_db=False)
+
+        # Make the GTK window with race number in the title
+        window = Gtk.ApplicationWindow(application=self)
+        window.set_title(f"Race Timing GUI - Race #{race_number}")
+        window.set_default_size(600, 400)
+        window.present()
+
+if __name__ == "__main__":
+    # Set up admin config DB
+    rtc.initialize_config_db()
+    # Start the GUI app
+    app = RaceTimingApp()
+    app.run(sys.argv)

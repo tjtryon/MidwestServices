@@ -1,0 +1,24 @@
+"""
+ requirements.txt for race_timingThe Race Timing Solution
+for Cross Country and Road Races.
+
+ 
+Database needed for both console and gui.
+"""
+sqlite3  # Standard library, no need to install via pip
+
+""" 
+For password hashing - needed for both console and gui
+(used by console logic).
+"""
+bcrypt==4.1.2 
+
+""" 
+For playing sound alerts - needed for both console and gui.
+"""
+playsound==1.2.2 
+
+""" 
+GTK 4 bindings for Python for GUI program
+"""
+PyGObject==3.46.0
