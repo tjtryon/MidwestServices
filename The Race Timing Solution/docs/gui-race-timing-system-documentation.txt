@@ -8,7 +8,7 @@ The Race Timing System is a comprehensive cross-country and track event timing a
 
 1. **Date-Based SQLite Database**
 
-   * Automatically generates a SQLite database named `YYYYMMDDRace.db` based on the system date.
+   * Automatically generates a SQLite database named `YYYYMMDD-race.db` based on the system date.
    * Supports multiple races (heats) per day using a `race_number` field.
 
 2. **Runner Registration and Input**
