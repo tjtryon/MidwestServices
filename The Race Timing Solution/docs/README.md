@@ -19,7 +19,7 @@ This is a Python console-based race timing and scoring system designed for cross
 - Manual entry for finishers by bib number.
 - Separate race numbers to handle multiple heats.
 - Team scoring calculates points from top 5 runners and includes 2 displacers.
-- Results and runner data saved in SQLite database files named `YYYYMMDDRace.db`.
+- Results and runner data saved in SQLite database files named `YYYYMMDD-Race.db`.
 - Sound alerts played on successful finish time entry.
 - Menu-driven CLI interface.
 

@@ -219,9 +219,9 @@ Your runner data CSV should include these columns:
 
 **Automatic naming convention:**
 ```
-YYYYMMDD-##-Race_Name.db
+YYYYMMDD-##-<race_name>.db
 ```
-
+>
 Examples:
 - `20250722-01-State_Championship.db`
 - `20250722-02-Regional_Meet.db`
