@@ -1,0 +1,77 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏃‍♂️ Road Race Results</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Dashboard</a>
+  </div>
+
+  {% if races %}
+  <div class="alert alert-info" role="alert">
+    <strong>Road Race Scoring:</strong> Runners are grouped by age divisions. 
+    Age groups: 1-15, 16-20, 21-25, 26-30, 31-35, 36-40, 41-45, 46-50, 51-55, 56-60, 61-65, 66-70, 71+
+  </div>
+
+  <div class="row">
+    {% for race in races %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-success h-100">
+        <div class="card-header bg-success text-white">
+          <h6 class="card-title mb-0">Road Race</h6>
+        </div>
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">{{ race.race_id }}</h6>
+          <p class="card-text">
+            {% if race.race_name %}
+              <strong>{{ race.race_name }}</strong><br>
+            {% endif %}
+            <small class="text-muted">{{ race.filename }}</small>
+          </p>
+        </div>
+        <div class="card-footer bg-light">
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('individual_results', race_id=race.race_id) }}" 
+               class="btn btn-outline-success btn-sm">
+              📊 Individual Results
+            </a>
+            <a href="{{ url_for('age_group_results', race_id=race.race_id) }}" 
+               class="btn btn-success btn-sm">
+              🎂 Age Group Results
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">No Road Races Found</h4>
+    <p>No road race databases were found. To create road races:</p>
+    <ol>
+      <li>Use the console or GUI application</li>
+      <li>Select "Road Race" as the race type</li>
+      <li>Import runners with date of birth information</li>
+      <li>Complete the race timing</li>
+    </ol>
+    <hr>
+    <p class="mb-0">
+      <a href="{{ url_for('cross_country_results') }}" class="alert-link">View Cross Country Results</a> or 
+      <a href="{{ url_for('help') }}" class="alert-link">Get Help</a>
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Quick navigation -->
+  <div class="mt-4 text-center">
+    <a href="{{ url_for('cross_country_results') }}" class="btn btn-outline-primary me-2">
+      🏃‍♀️ View Cross Country Results
+    </a>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+      🏠 Return to Dashboard
+    </a>
+  </div>
+</div>
+{% endblock %}
