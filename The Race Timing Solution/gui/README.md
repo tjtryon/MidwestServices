@@ -1,5 +1,11 @@
 # 🖥️ The Race Timing Solution (TRTS) - GUI Version 🏃‍♀️🏃‍♂️
 
+---
+
+### Video Demo:
+
+---
+
 ## 🎯 Overview
 
 This is a modern **GTK4-based graphical interface** for the Race Timing Solution, providing an intuitive visual alternative to the console version. The GUI maintains **100% compatibility** with the console version's databases and authentication system while offering a user-friendly point-and-click experience.
