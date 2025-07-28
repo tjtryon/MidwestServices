@@ -1,0 +1,207 @@
+{% extends "html_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏆 Cross Country Team Results</h2>
+    <a href="{{ url_for('cross_country_results') }}" class="btn btn-secondary">← Back to Cross Country</a>
+  </div>
+
+  <!-- Race Information -->
+  <div class="alert alert-primary" role="alert">
+    <h5 class="alert-heading">🏃‍♀️ {{ race_info.display_name }}</h5>
+    <p class="mb-0">
+      <strong>Race ID:</strong> {{ race_info.race_id }} | 
+      <strong>Database:</strong> {{ race_info.filename }}
+    </p>
+  </div>
+
+  <!-- Scoring Information -->
+  <div class="alert alert-info" role="alert">
+    <strong>Cross Country Team Scoring:</strong> Teams are scored using the top 5 finishers. 
+    Each runner's overall place becomes their team points. Lower total scores win (like golf). 
+    The 6th and 7th runners are displacers used for tiebreaking.
+  </div>
+
+  <!-- Navigation between result types -->
+  <div class="mb-4">
+    <div class="btn-group" role="group">
+      <a href="{{ url_for('individual_results', race_id=race_info.race_id) }}" 
+         class="btn btn-outline-primary">📊 Individual Results</a>
+      <a href="{{ url_for('team_results', race_id=race_info.race_id) }}" 
+         class="btn btn-primary">🏆 Team Results</a>
+    </div>
+  </div>
+
+  {% if team_results %}
+  <!-- Team Results -->
+  {% for team in team_results %}
+  <div class="card mb-4">
+    <div class="card-header {% if loop.index == 1 %}bg-warning text-dark{% elif loop.index == 2 %}bg-secondary text-white{% elif loop.index == 3 %}bg-dark text-white{% else %}bg-primary text-white{% endif %}">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          {% if loop.index <= 3 %}
+            <span class="badge bg-light text-dark me-2">{{ loop.index }}</span>
+          {% else %}
+            {{ loop.index }}.
+          {% endif %}
+          {{ team.team }}
+        </h5>
+        <h5 class="mb-0">
+          <span class="badge bg-light text-dark">{{ team.score }} points</span>
+        </h5>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Top 5 Scoring Runners -->
+      <h6 class="text-success">🥇 Scoring Runners (Top 5)</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead class="table-light">
+            <tr>
+              <th>Overall Place</th>
+              <th>Bib</th>
+              <th>Name</th>
+              <th>Finish Time</th>
+              <th>Team Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for runner in team.top5 %}
+            <tr>
+              <td>
+                <span class="badge bg-success">{{ runner.place }}</span>
+              </td>
+              <td>{{ runner.bib }}</td>
+              <td>{{ runner.name }}</td>
+              <td><code>{{ runner.finish_time }}</code></td>
+              <td><strong>{{ runner.place }}</strong></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th colspan="4">Team Score Total:</th>
+              <th><strong>{{ team.score }} points</strong></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Displacers (if any) -->
+      {% if team.displacers %}
+      <h6 class="text-info mt-3">🏃 Displacers (Tiebreakers)</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead class="table-light">
+            <tr>
+              <th>Overall Place</th>
+              <th>Bib</th>
+              <th>Name</th>
+              <th>Finish Time</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for runner in team.displacers %}
+            <tr>
+              <td>
+                <span class="badge bg-info">{{ runner.place }}</span>
+              </td>
+              <td>{{ runner.bib }}</td>
+              <td>{{ runner.name }}</td>
+              <td><code>{{ runner.finish_time }}</code></td>
+              <td>
+                <small class="text-muted">
+                  {{ "6th Runner" if loop.index == 1 else "7th Runner" }}
+                </small>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Team Scoring Summary -->
+  <div class="card mt-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">📊 Team Scoring Summary</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Team Rankings:</h6>
+          <ol class="list-group list-group-numbered">
+            {% for team in team_results[:5] %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ team.team }}
+              <span class="badge bg-primary rounded-pill">{{ team.score }} pts</span>
+            </li>
+            {% endfor %}
+          </ol>
+        </div>
+        <div class="col-md-6">
+          <h6>Scoring Information:</h6>
+          <ul class="list-unstyled">
+            <li><strong>{{ team_results|length }}</strong> teams with 5+ runners</li>
+            <li><strong>Scoring:</strong> Sum of top 5 places</li>
+            <li><strong>Tiebreakers:</strong> 6th and 7th runners</li>
+            <li><strong>Winner:</strong> {{ team_results[0].team if team_results else 'N/A' }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">No Team Results Found</h4>
+    <p>No team results found for this race. This could be because:</p>
+    <ul>
+      <li>The race hasn't been completed yet</li>
+      <li>No teams have 5 or more finishers (required for team scoring)</li>
+      <li>Runners weren't imported with team information</li>
+      <li>This is not a cross country race</li>
+    </ul>
+    <hr>
+    <p class="mb-0">
+      <a href="{{ url_for('individual_results', race_id=race_info.race_id) }}" class="alert-link">
+        View Individual Results
+      </a> or 
+      <a href="{{ url_for('cross_country_results') }}" class="alert-link">
+        Back to Cross Country List
+      </a>
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Action buttons -->
+  <div class="mt-4 text-center">
+    <a href="{{ url_for('individual_results', race_id=race_info.race_id) }}" class="btn btn-outline-primary me-2">
+      📊 View Individual Results
+    </a>
+    <a href="{{ url_for('cross_country_results') }}" class="btn btn-outline-secondary me-2">
+      🏃‍♀️ Back to Cross Country
+    </a>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+      🏠 Dashboard
+    </a>
+  </div>
+</div>
+
+<!-- Print styles -->
+<style>
+@media print {
+  .btn, .alert-primary, .alert-info { 
+    background: #6c757d !important; 
+    -webkit-print-color-adjust: exact;
+  }
+  .table { font-size: 0.8rem; }
+  .card { break-inside: avoid; }
+}
+</style>
+{% endblock %}
